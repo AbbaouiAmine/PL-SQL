@@ -1,0 +1,227 @@
+SQL> 
+SQL> -- nettoyage uniquement pour les tests
+SQL> drop table ligne_commande;
+
+Table supprimée.
+
+SQL> drop table commande;
+
+Table supprimée.
+
+SQL> drop table client;
+
+Table supprimée.
+
+SQL> drop table produit;
+
+Table supprimée.
+
+SQL> 
+SQL> -- creation du schéma de la BD
+SQL> -- V1
+SQL> -- creation de la table ligne de commande
+SQL> create table ligne_commande(
+  2  	     NUMCOM	     NUMBER(7),
+  3  	     NUMPROD	     NUMBER(7),
+  4  	     PRIX	     NUMBER(11,2),
+  5  	     QTECOM	     NUMBER(9),
+  6  	     CONSTRAINT PK_LC PRIMARY KEY (NUMCOM, NUMPROD)
+  7  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc ligne_commande
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCOM                                    NOT NULL NUMBER(7)
+ NUMPROD                                   NOT NULL NUMBER(7)
+ PRIX                                               NUMBER(11,2)
+ QTECOM                                             NUMBER(9)
+
+SQL> 
+SQL> -- creation de la table des commandes
+SQL> create table commande(
+  2  	     NUMCOM	     NUMBER(7),
+  3  	     NUMCLI	     NUMBER(7),
+  4  	     DATECOM	     DATE,
+  5  	     DATELIVRAI      DATE,
+  6  	     CONSTRAINT PK_COM PRIMARY KEY (NUMCOM)
+  7  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc commande
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCOM                                    NOT NULL NUMBER(7)
+ NUMCLI                                             NUMBER(7)
+ DATECOM                                            DATE
+ DATELIVRAI                                         DATE
+
+SQL> --- creation de la table des clients
+SQL> create table client(
+  2  	     NUMCLI	     NUMBER(7),
+  3  	     NOM	     VARCHAR2(50),
+  4  	     PRENOM	     VARCHAR2(25),
+  5  	     TELEPHONE	     VARCHAR2(25),
+  6  	     ADRESSE	     VARCHAR2(200) ,
+  7  	     VILLE	     VARCHAR2(30),
+  8  	     PAYS	     VARCHAR2(30),
+  9  	     CONSTRAINT PK_CLIENT PRIMARY KEY (NUMCLI)
+ 10  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc client
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCLI                                    NOT NULL NUMBER(7)
+ NOM                                                VARCHAR2(50)
+ PRENOM                                             VARCHAR2(25)
+ TELEPHONE                                          VARCHAR2(25)
+ ADRESSE                                            VARCHAR2(200)
+ VILLE                                              VARCHAR2(30)
+ PAYS                                               VARCHAR2(30)
+
+SQL> 
+SQL> -- creation de la table des produits
+SQL> create table produit(
+  2  	     NUMPROD	     NUMBER(7),
+  3  	     DESIGNATION     VARCHAR2(50),
+  4  	     DESCRIPTION     VARCHAR2(200),
+  5  	     PRIX	     NUMBER(11,2),
+  6  	     QTESTOCK	     NUMBER (9),
+  7  	     CONSTRAINT PK_PROD PRIMARY KEY (NUMPROD)
+  8  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc produit
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMPROD                                   NOT NULL NUMBER(7)
+ DESIGNATION                                        VARCHAR2(50)
+ DESCRIPTION                                        VARCHAR2(200)
+ PRIX                                               NUMBER(11,2)
+ QTESTOCK                                           NUMBER(9)
+
+SQL> 
+SQL> -- ajout des contraintes d'intégrité réferntielles apr un chnagement du schéma des tables
+SQL> -- ligne_commande
+SQL> ALTER TABLE LIGNE_COMMANDE
+  2  	     ADD CONSTRAINT CIR_LC_COM FOREIGN KEY (NUMCOM) REFERENCES COMMANDE(NUMCOM);
+
+Table modifiée.
+
+SQL> ALTER TABLE LIGNE_COMMANDE
+  2  	     ADD CONSTRAINT CIR_LC_PROD FOREIGN KEY (NUMPROD) REFERENCES PRODUIT(NUMPROD);
+
+Table modifiée.
+
+SQL> 
+SQL> -- commande
+SQL> ALTER TABLE COMMANDE
+  2  	     ADD CONSTRAINT CHECK_NN_DATECOM CHECK (DATECOM IS NOT NULL);
+
+Table modifiée.
+
+SQL> ALTER TABLE COMMANDE
+  2  	     ADD CONSTRAINT CHECK_NN_DATELIVRAI CHECK (DATELIVRAI IS NOT NULL);
+
+Table modifiée.
+
+SQL> ALTER TABLE COMMANDE
+  2  	     ADD CONSTRAINT CIR_COM_CLIENT FOREIGN KEY (NUMCLI) REFERENCES CLIENT(NUMCLI);
+
+Table modifiée.
+
+SQL> 
+SQL> -- client
+SQL> ALTER TABLE CLIENT
+  2  	     ADD CONSTRAINT CHECK_NN_NOM CHECK (NOM IS NOT NULL);
+
+Table modifiée.
+
+SQL> -- produit
+SQL> ALTER TABLE PRODUIT
+  2  	     ADD CONSTRAINT CHECK_NN_DESIGN CHECK (DESIGNATION IS NOT NULL);
+
+Table modifiée.
+
+SQL> 
+SQL> -- liste de mes tables
+SQL> select table_name from user_tables;
+
+TABLE_NAME                                                                      
+------------------------------                                                  
+LIGNE_COMMANDE                                                                  
+COMMANDE                                                                        
+CLIENT                                                                          
+PRODUIT                                                                         
+
+SQL> 
+SQL> -- les contraintes
+SQL> select constraint_name from user_constraints;
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+BIN$6+AEFohTTzS93PB23xmGOg==$0                                                  
+BIN$qPpheY7GTp6ZmfDk7uyLxw==$0                                                  
+BIN$h/KvQ0NzQw2A6NqDiqjjdQ==$0                                                  
+BIN$5e3KhpIeQzCQ1ansF/45CQ==$0                                                  
+BIN$H+Me8kgJTpezjKwkNKYpWw==$0                                                  
+BIN$0sVlGqIZT6+PRcCEYXGywA==$0                                                  
+BIN$TTUSsdIeSOGqBOq7AXeD9w==$0                                                  
+BIN$387xt93vRt+TVsOvYl+QZg==$0                                                  
+BIN$eZd2RXAdR16o7BZGA5l6dw==$0                                                  
+BIN$94E7Of3MQAehIAysPQgKMg==$0                                                  
+BIN$xzcwcaLVQd+BlNqOw0+oNA==$0                                                  
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+BIN$CyD9vndeQq6kOf5oLFariQ==$0                                                  
+CHECK_NN_DATECOM                                                                
+CHECK_NN_DATELIVRAI                                                             
+CHECK_NN_NOM                                                                    
+CHECK_NN_DESIGN                                                                 
+CIR_LC_PROD                                                                     
+CIR_COM_CLIENT                                                                  
+CIR_LC_COM                                                                      
+BIN$j5C78LaPTQOrw9iebpFv7A==$0                                                  
+BIN$0Pt/Rj/vTX+g0ITCEBMHGg==$0                                                  
+BIN$LZKB2Q9CTMeDrkxw+5mt3g==$0                                                  
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+BIN$AnbXTYviTAGo0B41C1PFvw==$0                                                  
+BIN$ybby6RGPTx+QJFsq3rOhMw==$0                                                  
+BIN$27qg36aqSGKH7YWS2WoQ/g==$0                                                  
+BIN$wXXd7W0MQniu1skzQ/a+Ow==$0                                                  
+BIN$+fCqKJs/Sxm/fuvCJ4f0eg==$0                                                  
+BIN$Nvm5F6BzTRKedE6P7Dsb1w==$0                                                  
+BIN$WZKXLy6aTa+64LkRETAJvg==$0                                                  
+BIN$W++CtME6ROCcQ7AE+jCQmQ==$0                                                  
+BIN$IhFKzAX1QqeyFzXt8q3lHQ==$0                                                  
+PK_LC                                                                           
+PK_COM                                                                          
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+PK_CLIENT                                                                       
+PK_PROD                                                                         
+
+35 ligne(s) sélectionnée(s).
+
+SQL> 
+SQL> 
+SQL> -- pour fermer le fichier de sauvegarde de la tarce
+SQL> -- sinon le fichier n'est pas fermé et reste vide
+SQL> spool off

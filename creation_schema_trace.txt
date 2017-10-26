@@ -1,0 +1,141 @@
+SQL> 
+SQL> 
+SQL> -- creation du schéma de la BD
+SQL> -- V1
+SQL> 
+SQL> --- creation de la table des clients
+SQL> create table client(
+  2  	     NUMCLI	     NUMBER(7)		     PRIMARY KEY,
+  3  	     NOM	     VARCHAR2(50)	     NOT NULL,
+  4  	     PRENOM	     VARCHAR2(25),
+  5  	     TELEPHONE	     VARCHAR2(25),
+  6  	     ADRESSE	     VARCHAR2(200) ,
+  7  	     VILLE	     VARCHAR2(30),
+  8  	     PAYS	     VARCHAR2(30)
+  9  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc client
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCLI                                    NOT NULL NUMBER(7)
+ NOM                                       NOT NULL VARCHAR2(50)
+ PRENOM                                             VARCHAR2(25)
+ TELEPHONE                                          VARCHAR2(25)
+ ADRESSE                                            VARCHAR2(200)
+ VILLE                                              VARCHAR2(30)
+ PAYS                                               VARCHAR2(30)
+
+SQL> 
+SQL> -- creation de la table des produits
+SQL> create table produit(
+  2  	     NUMPROD	     NUMBER(7)		     PRIMARY KEY,
+  3  	     DESIGNATION     VARCHAR2(50)	     NOT NULL,
+  4  	     DESCRIPTION     VARCHAR2(200),
+  5  	     PRIX	     NUMBER(11,2),
+  6  	     QTESTOCK	     NUMBER (9)
+  7  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc produit
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMPROD                                   NOT NULL NUMBER(7)
+ DESIGNATION                               NOT NULL VARCHAR2(50)
+ DESCRIPTION                                        VARCHAR2(200)
+ PRIX                                               NUMBER(11,2)
+ QTESTOCK                                           NUMBER(9)
+
+SQL> 
+SQL> -- creation de la table des commandes
+SQL> create table commande(
+  2  	     NUMCOM	     NUMBER(7)		     PRIMARY KEY,
+  3  	     NUMCLI	     NUMBER(7)		     REFERENCES CLIENT(NUMCLI),
+  4  	     DATECOM	     DATE		     NOT NULL,
+  5  	     DATELIVRAI      DATE		     NOT NULL
+  6  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc commande
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCOM                                    NOT NULL NUMBER(7)
+ NUMCLI                                             NUMBER(7)
+ DATECOM                                   NOT NULL DATE
+ DATELIVRAI                                NOT NULL DATE
+
+SQL> 
+SQL> -- creation de la table ligne de commande
+SQL> create table ligne_commande(
+  2  	     NUMCOM	     NUMBER(7)		     REFERENCES COMMANDE(NUMCOM),
+  3  	     NUMPROD	     NUMBER(7)		     REFERENCES PRODUIT(NUMPROD),
+  4  	     PRIX	     NUMBER(11,2),
+  5  	     QTECOM	     NUMBER(9),
+  6  	     CONSTRAINT PK_LC PRIMARY KEY (NUMCOM, NUMPROD)
+  7  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc ligne_commande
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCOM                                    NOT NULL NUMBER(7)
+ NUMPROD                                   NOT NULL NUMBER(7)
+ PRIX                                               NUMBER(11,2)
+ QTECOM                                             NUMBER(9)
+
+SQL> 
+SQL> 
+SQL> -- liste de mes tables
+SQL> select table_name from user_tables;
+
+TABLE_NAME                                                                      
+------------------------------                                                  
+CLIENT                                                                          
+PRODUIT                                                                         
+COMMANDE                                                                        
+LIGNE_COMMANDE                                                                  
+
+SQL> 
+SQL> -- les contraintes
+SQL> select constraint_name from user_constraints;
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+BIN$6+AEFohTTzS93PB23xmGOg==$0                                                  
+BIN$qPpheY7GTp6ZmfDk7uyLxw==$0                                                  
+SYS_C0011536                                                                    
+SYS_C0011538                                                                    
+SYS_C0011540                                                                    
+SYS_C0011541                                                                    
+SYS_C0011545                                                                    
+SYS_C0011546                                                                    
+SYS_C0011543                                                                    
+BIN$j5C78LaPTQOrw9iebpFv7A==$0                                                  
+BIN$0Pt/Rj/vTX+g0ITCEBMHGg==$0                                                  
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+SYS_C0011537                                                                    
+SYS_C0011539                                                                    
+SYS_C0011542                                                                    
+PK_LC                                                                           
+
+15 ligne(s) sélectionnée(s).
+
+SQL> 
+SQL> 
+SQL> -- pour fermer le fichier de sauvegarde de la tarce
+SQL> -- sinon le fichier n'est pas fermé et reste vide
+SQL> spool off

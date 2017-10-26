@@ -1,0 +1,189 @@
+SQL> 
+SQL> -- nettoyage uniquement pour les tests
+SQL> drop table ligne_commande;
+drop table ligne_commande
+           *
+ERREUR à la ligne 1 :
+ORA-00942: Table ou vue inexistante 
+
+
+SQL> drop table commande;
+drop table commande
+           *
+ERREUR à la ligne 1 :
+ORA-00942: Table ou vue inexistante 
+
+
+SQL> drop table client;
+
+Table supprimée.
+
+SQL> drop table produit;
+
+Table supprimée.
+
+SQL> 
+SQL> -- creation du schéma de la BD
+SQL> -- V1
+SQL> 
+SQL> --- creation de la table des clients
+SQL> create table client(
+  2  	     NUMCLI	     NUMBER(7),
+  3  	     NOM	     VARCHAR2(50),
+  4  	     PRENOM	     VARCHAR2(25),
+  5  	     TELEPHONE	     VARCHAR2(25),
+  6  	     ADRESSE	     VARCHAR2(200) ,
+  7  	     VILLE	     VARCHAR2(30),
+  8  	     PAYS	     VARCHAR2(30),
+  9  	     CONSTRAINT PK_CLIENT PRIMARY KEY (NUMCLI),
+ 10  	     CONSTRAINT CHECK_NN_NOM CHECK (NOM IS NOT NULL)
+ 11  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc client
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCLI                                    NOT NULL NUMBER(7)
+ NOM                                                VARCHAR2(50)
+ PRENOM                                             VARCHAR2(25)
+ TELEPHONE                                          VARCHAR2(25)
+ ADRESSE                                            VARCHAR2(200)
+ VILLE                                              VARCHAR2(30)
+ PAYS                                               VARCHAR2(30)
+
+SQL> 
+SQL> -- creation de la table des produits
+SQL> create table produit(
+  2  	     NUMPROD	     NUMBER(7),
+  3  	     DESIGNATION     VARCHAR2(50),
+  4  	     DESCRIPTION     VARCHAR2(200),
+  5  	     PRIX	     NUMBER(11,2),
+  6  	     QTESTOCK	     NUMBER (9),
+  7  	     CONSTRAINT PK_PROD PRIMARY KEY (NUMPROD),
+  8  	     CONSTRAINT CHECK_NN_DESIGN CHECK (DESIGNATION IS NOT NULL)
+  9  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc produit
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMPROD                                   NOT NULL NUMBER(7)
+ DESIGNATION                                        VARCHAR2(50)
+ DESCRIPTION                                        VARCHAR2(200)
+ PRIX                                               NUMBER(11,2)
+ QTESTOCK                                           NUMBER(9)
+
+SQL> 
+SQL> -- creation de la table des commandes
+SQL> create table commande(
+  2  	     NUMCOM	     NUMBER(7),
+  3  	     NUMCLI	     NUMBER(7),
+  4  	     DATECOM	     DATE,
+  5  	     DATELIVRAI      DATE,
+  6  	     CONSTRAINT PK_COM PRIMARY KEY (NUMCOM),
+  7  	     CONSTRAINT CHECK_NN_DATECOM CHECK (DATECOM IS NOT NULL),
+  8  	     CONSTRAINT CHECK_NN_DATELIVRAI CHECK (DATELIVRAI IS NOT NULL),
+  9  	     CONSTRAINT CIR_COM_CLIENT FOREIGN KEY (NUMCLI) REFERENCES CLIENT(NUMCLI)
+ 10  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc commande
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCOM                                    NOT NULL NUMBER(7)
+ NUMCLI                                             NUMBER(7)
+ DATECOM                                            DATE
+ DATELIVRAI                                         DATE
+
+SQL> 
+SQL> -- creation de la table ligne de commande
+SQL> create table ligne_commande(
+  2  	     NUMCOM	     NUMBER(7),
+  3  	     NUMPROD	     NUMBER(7),
+  4  	     PRIX	     NUMBER(11,2),
+  5  	     QTECOM	     NUMBER(9),
+  6  	     CONSTRAINT PK_LC PRIMARY KEY (NUMCOM, NUMPROD),
+  7  	     CONSTRAINT CIR_LC_COM FOREIGN KEY (NUMCOM) REFERENCES COMMANDE(NUMCOM),
+  8  	     CONSTRAINT CIR_LC_PROD FOREIGN KEY (NUMPROD) REFERENCES PRODUIT(NUMPROD)
+  9  );
+
+Table créée.
+
+SQL> 
+SQL> -- test
+SQL> desc ligne_commande
+ Nom                                       NULL ?   Type
+ ----------------------------------------- -------- ----------------------------
+ NUMCOM                                    NOT NULL NUMBER(7)
+ NUMPROD                                   NOT NULL NUMBER(7)
+ PRIX                                               NUMBER(11,2)
+ QTECOM                                             NUMBER(9)
+
+SQL> 
+SQL> 
+SQL> -- liste de mes tables
+SQL> select table_name from user_tables;
+
+TABLE_NAME                                                                      
+------------------------------                                                  
+CLIENT                                                                          
+PRODUIT                                                                         
+COMMANDE                                                                        
+LIGNE_COMMANDE                                                                  
+
+SQL> 
+SQL> -- les contraintes
+SQL> select constraint_name from user_constraints;
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+BIN$6+AEFohTTzS93PB23xmGOg==$0                                                  
+BIN$qPpheY7GTp6ZmfDk7uyLxw==$0                                                  
+BIN$h/KvQ0NzQw2A6NqDiqjjdQ==$0                                                  
+BIN$5e3KhpIeQzCQ1ansF/45CQ==$0                                                  
+BIN$H+Me8kgJTpezjKwkNKYpWw==$0                                                  
+BIN$0sVlGqIZT6+PRcCEYXGywA==$0                                                  
+BIN$TTUSsdIeSOGqBOq7AXeD9w==$0                                                  
+BIN$387xt93vRt+TVsOvYl+QZg==$0                                                  
+CHECK_NN_NOM                                                                    
+CHECK_NN_DESIGN                                                                 
+CHECK_NN_DATECOM                                                                
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+CHECK_NN_DATELIVRAI                                                             
+CIR_LC_COM                                                                      
+CIR_LC_PROD                                                                     
+CIR_COM_CLIENT                                                                  
+BIN$j5C78LaPTQOrw9iebpFv7A==$0                                                  
+BIN$0Pt/Rj/vTX+g0ITCEBMHGg==$0                                                  
+BIN$LZKB2Q9CTMeDrkxw+5mt3g==$0                                                  
+BIN$AnbXTYviTAGo0B41C1PFvw==$0                                                  
+BIN$ybby6RGPTx+QJFsq3rOhMw==$0                                                  
+BIN$27qg36aqSGKH7YWS2WoQ/g==$0                                                  
+BIN$wXXd7W0MQniu1skzQ/a+Ow==$0                                                  
+
+CONSTRAINT_NAME                                                                 
+------------------------------                                                  
+BIN$+fCqKJs/Sxm/fuvCJ4f0eg==$0                                                  
+PK_CLIENT                                                                       
+PK_PROD                                                                         
+PK_COM                                                                          
+PK_LC                                                                           
+
+27 ligne(s) sélectionnée(s).
+
+SQL> 
+SQL> 
+SQL> -- pour fermer le fichier de sauvegarde de la tarce
+SQL> -- sinon le fichier n'est pas fermé et reste vide
+SQL> spool off
