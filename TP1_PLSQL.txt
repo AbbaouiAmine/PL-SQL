@@ -1,0 +1,7 @@
+question:
+
+1. creer la base de données et l'alimenter par les données
+2. Ecrire un bloc PL/SQL pour afficher la nom et la ville du client numéro 3
+3. Ecrire un bloc PL/SQL pour afficher toutes les infos du client numéro 3
+4. Ecrire un bloc PL/SQL pour afficher le nombre de commandes et le total du client 3
+5. Même chose pour le client Doukkali
